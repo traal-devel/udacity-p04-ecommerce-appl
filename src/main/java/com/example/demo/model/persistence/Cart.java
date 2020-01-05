@@ -2,9 +2,7 @@ package com.example.demo.model.persistence;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,16 +10,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * JPA entity Cart.
+ * 
+ * @author traal-devel
+ */
 @Entity
 @Table(name = "cart")
 public class Cart {
 	
+  
+  /* member variables */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
@@ -31,16 +35,24 @@ public class Cart {
 	@ManyToMany
 	@JsonProperty
 	@Column
-    private List<Item> items;
+  private List<Item> items;
 	
 	@OneToOne(mappedBy = "cart")
 	@JsonProperty
-    private User user;
+  private User user;
 	
 	@Column
 	@JsonProperty
 	private BigDecimal total;
 	
+	
+	/* constructors */
+	public Cart() {
+	  super();
+	}
+	
+	
+	/* methods */
 	public BigDecimal getTotal() {
 		return total;
 	}

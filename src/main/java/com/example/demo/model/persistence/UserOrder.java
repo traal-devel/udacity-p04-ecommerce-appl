@@ -18,10 +18,17 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * JPA entity UserOrder
+ * 
+ * @author traal-devel
+ */
 @Entity
 @Table(name = "user_order")
 public class UserOrder {
 
+  
+  /* member variables */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
@@ -42,6 +49,14 @@ public class UserOrder {
 	@Column
 	private BigDecimal total;
 
+	
+	/* constructors */
+	public UserOrder() {
+	  super();
+	}
+	
+	
+	/* methods */
 	public Long getId() {
 		return id;
 	}
