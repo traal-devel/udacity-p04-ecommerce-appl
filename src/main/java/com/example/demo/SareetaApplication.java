@@ -3,6 +3,7 @@ package com.example.demo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -10,9 +11,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * 
  * @author traal-devel
  */
-@EnableJpaRepositories("com.example.demo.model.persistence.repositories")
-@EntityScan("com.example.demo.model.persistence")
-@SpringBootApplication
+@EnableJpaRepositories(
+    value = "com.example.demo.model.persistence.repositories"
+)
+@EntityScan(
+    value = "com.example.demo.model.persistence"
+)
+@SpringBootApplication(
+    exclude = SecurityAutoConfiguration.class
+)
 public class SareetaApplication {
 
   
