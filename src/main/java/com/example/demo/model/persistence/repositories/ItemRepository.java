@@ -6,7 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.demo.model.persistence.Item;
 
+/**
+ * Impementation of the JPA CartRepository.
+ * 
+ * @author traal-devel
+ */
 public interface ItemRepository extends JpaRepository<Item, Long> {
-	public List<Item> findByName(String name);
+
+  /* methods */
+  public List<Item> findByName(String name);
 
 }
