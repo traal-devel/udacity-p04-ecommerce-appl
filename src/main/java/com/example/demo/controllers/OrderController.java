@@ -10,42 +10,80 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.UserOrder;
-import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.OrderRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 
+/**
+ * Implementation of the OrderController.
+ * 
+ * @author traal-devel
+ */
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
 	
 	
+  /* member variables */
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepository   userRepository;
 	
 	@Autowired
-	private OrderRepository orderRepository;
+	private OrderRepository  orderRepository;
 	
 	
+	/* constructors */
+	/**
+	 * Default constructor for OrderController.
+	 */
+	public OrderController() {
+	  super();
+	}
+	
+	
+	/* methods */
+	/**
+	 * Submits the current order for the given username.
+	 * 
+	 * @param username String
+	 * @return {@link UserOrder}
+	 */
 	@PostMapping("/submit/{username}")
-	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
-		User user = userRepository.findByUsername(username);
+	public ResponseEntity<UserOrder> submit(
+	    @PathVariable String username
+	) {
+	
+	  User user = userRepository.findByUsername(username);
 		if(user == null) {
 			return ResponseEntity.notFound().build();
 		}
+		
 		UserOrder order = UserOrder.createFromCart(user.getCart());
 		orderRepository.save(order);
+		
 		return ResponseEntity.ok(order);
+		
 	}
 	
+	/**
+	 * Gets the orders for the user specified with the given parameter.
+	 * 
+	 * @param username String
+	 * @return List of {@link UserOrder}
+	 */
 	@GetMapping("/history/{username}")
-	public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
-		User user = userRepository.findByUsername(username);
+	public ResponseEntity<List<UserOrder>> getOrdersForUser(
+	    @PathVariable String username
+	) {
+	
+	  User user = userRepository.findByUsername(username);
 		if(user == null) {
 			return ResponseEntity.notFound().build();
 		}
+		
 		return ResponseEntity.ok(orderRepository.findByUser(user));
+	
 	}
+	
 }

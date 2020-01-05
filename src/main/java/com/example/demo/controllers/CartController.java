@@ -19,10 +19,17 @@ import com.example.demo.model.persistence.repositories.ItemRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.ModifyCartRequest;
 
+/**
+ * Implementation of the CartController.
+ * 
+ * @author traal-devel
+ */
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
 	
+  
+  /* member variables */
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -32,38 +39,81 @@ public class CartController {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	@PostMapping("/addToCart")
-	public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) {
-		User user = userRepository.findByUsername(request.getUsername());
-		if(user == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		Optional<Item> item = itemRepository.findById(request.getItemId());
-		if(!item.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		Cart cart = user.getCart();
-		IntStream.range(0, request.getQuantity())
-			.forEach(i -> cart.addItem(item.get()));
-		cartRepository.save(cart);
-		return ResponseEntity.ok(cart);
+	
+	/* constructors */
+	public CartController() {
+	  super();
 	}
 	
-	@PostMapping("/removeFromCart")
-	public ResponseEntity<Cart> removeFromcart(@RequestBody ModifyCartRequest request) {
+	
+	/* methods */
+	/**
+	 * Adds items to the cart by using given parameter. 
+	 * 
+	 * @param request {@link ModifyCartRequest}
+	 * @return {@link Cart}
+	 */
+	@PostMapping("/addToCart")
+	public ResponseEntity<Cart> addTocart(
+	    @RequestBody ModifyCartRequest request
+	 ) {
+	  // 1. Step : Find user
 		User user = userRepository.findByUsername(request.getUsername());
 		if(user == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+		
+		// 2. Step: Find items by given id.
 		Optional<Item> item = itemRepository.findById(request.getItemId());
 		if(!item.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+		
+		// 3. Step: Add items n times.
+		Cart cart = user.getCart();
+		IntStream.range(0, request.getQuantity())
+			         .forEach(i -> cart.addItem(item.get()));
+		
+		// 4. Step: Store into database.
+		cartRepository.save(cart);
+		
+		return ResponseEntity.ok(cart);
+		
+	}
+	
+	/**
+	 * Remove an item from existing cart.
+	 * 
+	 * @param request {@link ModifyCartRequest}
+	 * @return {@link Cart}
+	 */
+	@PostMapping("/removeFromCart")
+	public ResponseEntity<Cart> removeFromcart(
+	    @RequestBody ModifyCartRequest request
+	) {
+	
+	  // 1. Step: Find user by given username
+	  User user = userRepository.findByUsername(request.getUsername());
+		if(user == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		
+		// 2. Step: Find item by id.
+		Optional<Item> item = itemRepository.findById(request.getItemId());
+		if(!item.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		
+		// 3. Step: Remove item from cart n times.
 		Cart cart = user.getCart();
 		IntStream.range(0, request.getQuantity())
 			.forEach(i -> cart.removeItem(item.get()));
+		
+		// 4. Step: Store current cart in the databasee
 		cartRepository.save(cart);
+		
 		return ResponseEntity.ok(cart);
+		
 	}
 		
 }
