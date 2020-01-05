@@ -10,7 +10,20 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 public class SareetaApplication {
 
-	public static void main(String[] args) {
+  
+  /* member variables */
+  
+  
+  /* constructors */
+  public SareetaApplication() {
+    super();
+  }
+  
+  
+  /* methods */
+	public static void main(
+	    String[] args
+	) {
 		SpringApplication.run(SareetaApplication.class, args);
 	}
 
