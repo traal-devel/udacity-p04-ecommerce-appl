@@ -1,7 +1,10 @@
 package com.example.demo.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.CreateUserRequest;
+import com.example.demo.util.SecurityUtil;
 
 /**
  * Implementation of the UserController.
@@ -25,12 +29,19 @@ import com.example.demo.model.requests.CreateUserRequest;
 public class UserController {
 	
   
+  /* constants */
+  private static final Logger logger = LogManager.getLogger(UserController.class);
+  
+  
   /* member variables */
 	@Autowired
 	private UserRepository   userRepository;
 	
 	@Autowired
 	private CartRepository   cartRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder  passwordEncoder;
 
 	
 	/* constructors */
@@ -80,7 +91,7 @@ public class UserController {
 	 * Create user by using given parameter.
 	 * 
 	 * @param createUserRequest {@link CreateUserRequest}
-	 * @return {@link User}
+	 * @return {@link User} 
 	 */
 	@PostMapping("/create")
 	public ResponseEntity<User> createUser(
@@ -94,6 +105,24 @@ public class UserController {
 		cartRepository.save(cart);
 		
 		user.setCart(cart);
+		
+		// Validation of the two password given
+		if (createUserRequest.getPassword().length() < 7 ||
+		    !createUserRequest.getPassword()
+		          .equals(createUserRequest.getConfirmPassword())) {
+		  logger.error(
+		          "Error with user password. Cannot create user {}", 
+		          createUserRequest.getUsername());
+		}
+		// Generate random salt
+		String salt = SecurityUtil.generateRanomSalt();
+		String encodedPassword = 
+		          this.passwordEncoder.encode(
+		              salt + ":" + createUserRequest.getPassword()
+		          );
+		user.setPassword(encodedPassword);
+		user.setSalt(salt);
+		
 		userRepository.save(user);
 		
 		return ResponseEntity.ok(user);
