@@ -12,12 +12,19 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-
+/**
+ * JPA entity User.
+ * 
+ * @author traal-devel
+ */
 @Entity
 @Table(name = "user")
 public class User {
 
+  
+  /* member variables */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
@@ -27,11 +34,23 @@ public class User {
 	@JsonProperty
 	private String username;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id", referencedColumnName = "id")
-	@JsonIgnore
-    private Cart cart;
+	@Column(nullable = false)
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String password;
 	
+	@OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "cart_id", referencedColumnName = "id")
+	@JsonIgnore
+  private Cart cart;
+	
+	
+	/* constructors */
+	public User() {
+	  super();
+	}
+	
+	
+	/* methods */
 	public Cart getCart() {
 		return cart;
 	}
@@ -55,7 +74,13 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 	
 }
