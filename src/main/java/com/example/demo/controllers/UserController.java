@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,15 +30,16 @@ public class UserController {
 	
   
   /* constants */
-  private static final Logger logger = LogManager.getLogger(UserController.class);
+  private static final Logger logger = 
+                      LoggerFactory.getLogger(UserController.class);
   
   
   /* member variables */
 	@Autowired
-	private UserRepository   userRepository;
+	private UserRepository         userRepository;
 	
 	@Autowired
-	private CartRepository   cartRepository;
+	private CartRepository         cartRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder  passwordEncoder;
@@ -94,15 +95,18 @@ public class UserController {
 	 * @return {@link User} 
 	 */
 	@PostMapping("/create")
-	public ResponseEntity<User> createUser(
+	public ResponseEntity<User> createUser (
 	    @RequestBody CreateUserRequest createUserRequest
 	) {
 	  
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
 		
+		logger.info("User name seth with ", createUserRequest.getUsername());
+		
 		Cart cart = new Cart();
 		cartRepository.save(cart);
+		
 		
 		user.setCart(cart);
 		
@@ -113,6 +117,7 @@ public class UserController {
 		  logger.error(
 		          "Error with user password. Cannot create user {}", 
 		          createUserRequest.getUsername());
+		  return ResponseEntity.badRequest().build();
 		}
 		// Generate random salt
 		String salt = SecurityUtil.generateRanomSalt();
