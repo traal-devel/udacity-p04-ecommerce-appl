@@ -23,7 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 // that must be disabled, as we will be implementing our own. This must be 
 // done in the Application class.
 @SpringBootApplication(
-    exclude = SecurityAutoConfiguration.class
+    exclude = {SecurityAutoConfiguration.class}
 )
 public class SareetaApplication {
 
@@ -44,9 +44,5 @@ public class SareetaApplication {
 		SpringApplication.run(SareetaApplication.class, args);
 	}
 	
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-	  return new BCryptPasswordEncoder();
-	}
 
 }
