@@ -1,10 +1,8 @@
 package com.example.demo.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -34,11 +32,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   
   /* member variables */
-  @Autowired
-  private UserDetailsServiceImpl userDetailsService;
   
-  @Autowired
-  private BCryptPasswordEncoder  passwordEncoder;
   
   /* constructors */
   public WebSecurityConfiguration() {
@@ -61,6 +55,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .addFilter(new JWTAutenticationVerificationFilter(this.authenticationManager()))
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     ;
+    http.apply(
+          new JwtTokenFilterConfigurer(
+              new JWTAuthenticationFilter(this.authenticationManager()),
+              new JWTAutenticationVerificationFilter(this.authenticationManager())
+          ));
   }
   
   @Bean
@@ -69,17 +68,33 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     return super.authenticationManagerBean();
   }
   
-  @Override
-  protected void configure(
-      AuthenticationManagerBuilder auth
-  ) throws Exception {
-    
-    auth.parentAuthenticationManager(this.authenticationManagerBean())
-        .userDetailsService(this.userDetailsService)
-        .passwordEncoder(this.passwordEncoder)
-        ;
-    
+  @Bean
+  public BCryptPasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12);
   }
+  
+  // :INFO:jk, 25.01.2020: This is an error. Do not try to define the beans
+  // UserDetailSevice and PasswordEncoder this way or you will loop forever
+  // in the class: 
+  //
+  // - org.springframework.security.authentication.ProviderManager
+  //
+  // because of the fact that you set the parent and therefore the line: 
+  //
+  // -> result = parentResult = parent.authenticate(authentication);
+  // 
+  // will be invoked over and over again.
+//  @Override
+//  protected void configure(
+//      AuthenticationManagerBuilder auth
+//  ) throws Exception {
+//    
+//    auth.parentAuthenticationManager(this.authenticationManagerBean())
+//        .userDetailsService(this.userDetailsService)
+//        .passwordEncoder(this.passwordEncoder)
+//        ;
+//    
+//  }
   
   
 
