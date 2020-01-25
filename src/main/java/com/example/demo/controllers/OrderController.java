@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,10 @@ import com.example.demo.model.persistence.repositories.UserRepository;
 @RequestMapping("/api/order")
 public class OrderController {
 	
+  
+  /* constants */
+  
+  private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 	
   /* member variables */
 	@Autowired
@@ -56,14 +62,15 @@ public class OrderController {
 	
 	  User user = userRepository.findByUsername(username);
 		if(user == null) {
+		  logger.error("Create order failed. User not found");
 			return ResponseEntity.notFound().build();
 		}
 		
 		UserOrder order = UserOrder.createFromCart(user.getCart());
 		orderRepository.save(order);
+		logger.error("Create order was successful");
 		
 		return ResponseEntity.ok(order);
-		
 	}
 	
 	/**
