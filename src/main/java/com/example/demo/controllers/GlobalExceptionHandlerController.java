@@ -64,7 +64,7 @@ public class GlobalExceptionHandlerController {
       Exception ex
   ) throws IOException {
     
-    logger.error("Handle exception", ex);
+    logger.error("Handle global exception", ex);
     res.sendError(HttpStatus.BAD_REQUEST.value(), "Something went wrong");
   }
 
