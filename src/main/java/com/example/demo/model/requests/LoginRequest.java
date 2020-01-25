@@ -1,6 +1,6 @@
-package com.example.demo.dto;
+package com.example.demo.model.requests;
 
-public class LoginDto {
+public class LoginRequest {
 
   
   /* member variables */
@@ -10,7 +10,7 @@ public class LoginDto {
 
   
   /* constructors */
-  public LoginDto() {
+  public LoginRequest() {
     super();
   }
 
