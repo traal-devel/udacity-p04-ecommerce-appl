@@ -8,16 +8,22 @@ import static org.mockito.Mockito.any;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.example.demo.TestUtils;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.CreateUserRequest;
 import com.example.demo.util.SecurityUtil;
+import com.example.demo.util.TestUtils;
 
+/**
+ * JUnit tests for the class UserController.
+ * 
+ * @author traal-devel
+ */
 public class UserControllerTest {
 
   
@@ -68,6 +74,38 @@ public class UserControllerTest {
   }
   
   @Test
+  public void create_user_bad_request_password_not_equals() throws Exception {
+    when(this.passwordEncoder.encode(any()))
+        .thenReturn("thisIsHashed");
+    
+    CreateUserRequest r = new CreateUserRequest();
+    r.setUsername("testUser");
+    r.setPassword("testPassword");
+    r.setConfirmPassword("testPassword2");
+    
+    final ResponseEntity<User> response = userController.createUser(r);
+    
+    assertNotNull(response);
+    assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+  }
+  
+  @Test
+  public void create_user_bad_request_password_length_lower_than_7() throws Exception {
+    when(this.passwordEncoder.encode(any()))
+        .thenReturn("thisIsHashed");
+    
+    CreateUserRequest r = new CreateUserRequest();
+    r.setUsername("testUser");
+    r.setPassword("test");
+    r.setConfirmPassword("test");
+    
+    final ResponseEntity<User> response = userController.createUser(r);
+    
+    assertNotNull(response);
+    assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+  }
+  
+  @Test
   public void find_user_by_name_happy_path() throws Exception {
     User userMock = new User();
     userMock.setId(0);
@@ -88,4 +126,6 @@ public class UserControllerTest {
     assertEquals(userMock.getPassword(), user.getPassword());
     
   }
+  
+  
 }
