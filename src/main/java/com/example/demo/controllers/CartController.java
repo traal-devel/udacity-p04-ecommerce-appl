@@ -54,9 +54,10 @@ public class CartController {
 	 * @return {@link Cart}
 	 */
 	@PostMapping("/addToCart")
-	public ResponseEntity<Cart> addTocart(
+	public ResponseEntity<Cart> addToCart(
 	    @RequestBody ModifyCartRequest request
 	 ) {
+	  
 	  // 1. Step : Find user
 		User user = userRepository.findByUsername(request.getUsername());
 		if(user == null) {
@@ -75,9 +76,9 @@ public class CartController {
 			         .forEach(i -> cart.addItem(item.get()));
 		
 		// 4. Step: Store into database.
-		cartRepository.save(cart);
+		Cart cartDB = cartRepository.save(cart);
 		
-		return ResponseEntity.ok(cart);
+		return ResponseEntity.ok(cartDB);
 		
 	}
 	
@@ -88,7 +89,7 @@ public class CartController {
 	 * @return {@link Cart}
 	 */
 	@PostMapping("/removeFromCart")
-	public ResponseEntity<Cart> removeFromcart(
+	public ResponseEntity<Cart> removeFromCart(
 	    @RequestBody ModifyCartRequest request
 	) {
 	
