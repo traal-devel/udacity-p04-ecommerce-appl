@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.auth0.jwt.JWT;
 import com.example.demo.def.SecurityConstants;
+import com.example.demo.dto.LoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JWTAuthenticationFilter 
@@ -49,13 +50,14 @@ public class JWTAuthenticationFilter
   ) throws AuthenticationException {
     Authentication auth = null;
     try {
-      User credentials = 
-          new ObjectMapper().readValue(request.getInputStream(), User.class);
-      authManager.authenticate(
-          new UsernamePasswordAuthenticationToken(
-                credentials.getUsername(),
-                credentials.getPassword(),
-                new ArrayList<>())
+      
+      LoginDto credentials = 
+          new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
+      auth = authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                      credentials.getUsername(),
+                      credentials.getPassword(),
+                      new ArrayList<>())
       );
     } catch (IOException ioEx) {
       throw new RuntimeException(ioEx);
