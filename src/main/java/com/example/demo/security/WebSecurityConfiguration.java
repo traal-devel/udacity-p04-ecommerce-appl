@@ -55,11 +55,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .addFilter(new JWTAutenticationVerificationFilter(this.authenticationManager()))
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     ;
-    http.apply(
-          new JwtTokenFilterConfigurer(
-              new JWTAuthenticationFilter(this.authenticationManager()),
-              new JWTAutenticationVerificationFilter(this.authenticationManager())
-          ));
   }
   
   @Bean
