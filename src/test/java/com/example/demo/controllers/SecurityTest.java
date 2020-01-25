@@ -58,7 +58,7 @@ public class SecurityTest {
   
   @Test
   public void login_authorized() throws Exception {
-    String username = "johndoe";
+    String username = "janedoe";
     String password = "test1234#";
     CreateUserRequest request = new CreateUserRequest();
     request.setUsername(username);
