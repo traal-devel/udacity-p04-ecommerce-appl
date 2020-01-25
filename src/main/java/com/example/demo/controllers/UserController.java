@@ -121,10 +121,11 @@ public class UserController {
 		}
 		// Generate random salt
 		String salt = SecurityUtil.generateRanomSalt();
-		String encodedPassword = 
-		          this.passwordEncoder.encode(
-		              salt + ":" + createUserRequest.getPassword()
-		          );
+		// :TODO:@JK Temporarily: Do not add salt to password. 
+		String encodedPassword = this.passwordEncoder.encode(createUserRequest.getPassword()); 
+//		          this.passwordEncoder.encode(
+//		              salt + ":" + createUserRequest.getPassword()
+//		          );
 		user.setPassword(encodedPassword);
 		user.setSalt(salt);
 		
