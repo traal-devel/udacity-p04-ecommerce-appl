@@ -18,9 +18,19 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.def.SecurityConstants;
 
+/**
+ * This filter is used to set the JWT-Token into the spring security context.
+ * <p>
+ * If a JWT-Token is sent it will be checked. If it is valid then the 
+ * correspond Authentication object will be set into the spring security 
+ * context for later use (eg. rest controller). 
+ * </p>
+ * 
+ * @author traal-devel
+ */
 @Component
 public class JWTAutenticationVerificationFilter   
-                          extends BasicAuthenticationFilter {
+                                extends BasicAuthenticationFilter {
 
   
   /* member variables */
@@ -48,7 +58,7 @@ public class JWTAutenticationVerificationFilter
       FilterChain chain
   ) throws IOException, ServletException {
 
-    String header = request.getHeader(SecurityConstants.HEADER_STRING);
+    String header = request.getHeader(SecurityConstants.HEADER_AUTHORIZATION);
     
     if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
       chain.doFilter(request, response);
@@ -65,7 +75,7 @@ public class JWTAutenticationVerificationFilter
       HttpServletRequest request
   ) {
     UsernamePasswordAuthenticationToken authToken = null;
-    String token = request.getHeader(SecurityConstants.HEADER_STRING);
+    String token = request.getHeader(SecurityConstants.HEADER_AUTHORIZATION);
     if (token != null) {
       String user = 
           JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()))
