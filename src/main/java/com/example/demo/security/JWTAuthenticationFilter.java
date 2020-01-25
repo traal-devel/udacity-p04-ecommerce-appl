@@ -20,9 +20,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.auth0.jwt.JWT;
 import com.example.demo.def.SecurityConstants;
-import com.example.demo.dto.LoginDto;
+import com.example.demo.model.requests.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Checks login request by a client.
+ * <p>
+ * Takes the username and password from a login request and logging in. 
+ * This, upon successful authentication, should hand back a valid JWT 
+ * in the Authorization header
+ * </p>
+ * 
+ * @author traal-devel
+ */
 public class JWTAuthenticationFilter 
                         extends UsernamePasswordAuthenticationFilter {
 
@@ -51,8 +61,8 @@ public class JWTAuthenticationFilter
     Authentication auth = null;
     try {
       
-      LoginDto credentials = 
-          new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
+      LoginRequest credentials = 
+          new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
       auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                       credentials.getUsername(),
@@ -84,7 +94,7 @@ public class JWTAuthenticationFilter
            .sign(HMAC512(SecurityConstants.SECRET.getBytes()));
     
     response.addHeader(
-        SecurityConstants.HEADER_STRING, 
+        SecurityConstants.HEADER_AUTHORIZATION, 
         SecurityConstants.TOKEN_PREFIX + token);
   }
 
