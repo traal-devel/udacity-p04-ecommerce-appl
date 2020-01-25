@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <conversionRule conversionWord="uuid" 
+                  converterClass="nac.rest.util.LogbackUUIDConverter" />
+  <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+	<appender name="SPLUNK_LOGGER" 
+	          class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+		<url>http://localhost:8088</url>
+		<token>a657c63e-d1ff-41e7-a313-52a69ea70972</token>
+		<disableCertificateValidation>true</disableCertificateValidation>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+	  	<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</layout>
+  </appender>
+	   
+	<!-- 
+	<logger name="SPLUNK_LOGGER" level="debug">
+	   <appender-ref ref="SPLUNK_LOGGER" />
+  </logger>
+  -->
+
+  <appender name="APP_FILE" class="ch.qos.logback.core.FileAppender">
+    <file>app.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.springframework" level="WARN" />
+  <logger name="com.example.demo" level="INFO" />
+
+  <root level="INFO">
+    <appender-ref ref="APP_FILE" />
+    <appender-ref ref="SPLUNK_LOGGER" />
+  </root>
+</configuration>
