@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -91,9 +90,20 @@ public class UserOrder {
 
 	public static UserOrder createFromCart(Cart cart) {
 		UserOrder order = new UserOrder();
+		
 		order.setItems(cart.getItems().stream().collect(Collectors.toList()));
 		order.setTotal(cart.getTotal());
 		order.setUser(cart.getUser());
+		
+		// calculate the total.
+		BigDecimal total = 
+	    cart.getItems()
+		    .stream()
+		    .map(Item::getPrice)
+		    .reduce(BigDecimal.ZERO, (a,b) -> a.add(b));
+
+		order.setTotal(total);
+		
 		return order;
 	}
 	
