@@ -11,6 +11,15 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.repositories.UserRepository;
 
+/**
+ * User details service implementation.
+ * <p>
+ * Takes a username and return a userdetails User instance with the user's 
+ * username and hashed password.
+ * </p>
+ * 
+ * @author traal-devel
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

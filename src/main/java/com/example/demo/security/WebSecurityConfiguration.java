@@ -13,6 +13,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.example.demo.def.SecurityConstants;
 
+/**
+ * Web security configuration.
+ * <p>
+ * Attaches the user details service implementation to Spring's 
+ * AuthenticationManager. It also handles session management and what 
+ * endpoints are secured. 
+ * </p>
+ * <p>
+ * The session is managed by ourself so Spring's session management should 
+ * be disabled (in Spring's Application class). Filters were added to the 
+ * authentication chain and every endpoint but 1 should have security required. 
+ * The one that should not is the one responsible for creating new users.
+ * </p>
+ * 
+ * @author traal-devel
+ */
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -35,10 +51,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(
       HttpSecurity http
   ) throws Exception {
-    http.headers().frameOptions().disable(); // for h2
+    http.headers().frameOptions().disable();            // for h2
     http.cors().and().csrf().disable().authorizeRequests()
         .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-        .antMatchers("/h2", "/h2/**").permitAll()
+        .antMatchers("/h2", "/h2/**").permitAll()       // for tests
         .anyRequest().authenticated()
         .and()
         .addFilter(new JWTAuthenticationFilter(this.authenticationManager()))

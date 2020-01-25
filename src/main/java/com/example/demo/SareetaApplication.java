@@ -19,6 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EntityScan(
     value = "com.example.demo.model.persistence"
 )
+// :INFO: Spring Boot ships with an automatically configured security module 
+// that must be disabled, as we will be implementing our own. This must be 
+// done in the Application class.
 @SpringBootApplication(
     exclude = SecurityAutoConfiguration.class
 )
