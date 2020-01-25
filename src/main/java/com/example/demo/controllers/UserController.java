@@ -101,9 +101,8 @@ public class UserController {
 	  
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
-		
-		logger.info("User name seth with ", createUserRequest.getUsername());
-		
+		logger.info("Create-User attempt for {}", createUserRequest.getUsername());
+		     
 		Cart cart = new Cart();
 		cartRepository.save(cart);
 		
@@ -115,7 +114,7 @@ public class UserController {
 		    !createUserRequest.getPassword()
 		          .equals(createUserRequest.getConfirmPassword())) {
 		  logger.error(
-		          "Error with user password. Cannot create user {}", 
+		          "Create-User failed. Error with user password. Cannot create user {}", 
 		          createUserRequest.getUsername());
 		  return ResponseEntity.badRequest().build();
 		}
@@ -130,6 +129,8 @@ public class UserController {
 		user.setSalt(salt);
 		
 		userRepository.save(user);
+		
+		logger.info("Create-User was successful for user {}", createUserRequest.getUsername());
 		
 		return ResponseEntity.ok(user);
 		
